@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Document</title>
+
+		<style>
+
+			* {
+				font-family: Arial;
+			}
+
+			header {
+				font-size: 2em;
+				padding: 15px
+			}
+			.h {
+				color: #fff !important;
+				background-color: #22E698;
+			}
+
+			.products {
+				max-width: 300px;
+				margin: 30px auto 0 auto ;
+				border: 1px solid #d3d3d3;
+			}
+			.products .h {
+				padding: 5px 10px;
+			}
+
+			.products .item {
+				padding: 5px 10px;
+				color: #999999;
+				cursor: pointer;
+				position: relative;
+			}
+			.products .item:hover {
+				color: #000000;
+			}
+			.products .item:hover .remove {
+				display: inline;
+			}
+			.products .item .remove {
+				color: red;
+				position: absolute;
+				right: 5px;
+				display: none;
+			}
+			.checked {
+				text-decoration: line-through;
+			}
+
+			.details {
+				display: none;
+			}
+			.details * {
+				color: #999999;
+			}
+			.details .row {
+				padding: 5px 10px;
+			}
+			.qty, .price, .desc {
+				width: 100%;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="h">
+			ShoppingList
+		</header>
+
+		<div class="products">
+			<div class="h">ADD YOUR ITEMS HERE</div>
+			<div class="js-add-item item">Add Item</div>
+		</div>
+
+		<div class="products details">
+			<div class="h"></div>
+			<div class="row">
+				<div>Quantity</div>
+				<input type="text" class="qty" data-product="">
+			</div>
+			<div class="row">
+				<div>Price</div>
+				<input type="text" class="price" data-product="">
+			</div>
+			<div class="row">
+				<div>Description</div>
+				<textarea class="desc" data-product=""></textarea>
+			</div>
+		</div>
+
+		<!-- div -->
+
+
+		<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+		<script>
+
+			let products = {};
+
+			$(function(){
+				
+				$(".js-add-item").on('click', function(e) {
+					const item = prompt("Enter Item Name");
+
+					if( item !== '' && item !== null) {
+						const txt = `<div class="item">
+										<input type="checkbox">
+										<span class="item-name" data-value="${item}">${item}</span>
+										<span class="remove">X</span>
+									</div>`;
+						$( this ).before( txt );
+
+						products[item] = {qty:"1",price:"3",desc:"4"};
+					}
+
+				});
+
+				$(".products").on('change', ".item [type='checkbox']", function(e) {
+					if( $( this ).is(":checked") )
+						$( this ).parent().addClass("checked");
+					else
+						$( this ).parent().removeClass("checked");
+				});
+				
+				$(".products").on('click', ".item-name", function(e) {
+					$(".products.details").show();
+					$(".products.details .h").html( $( this ).attr("data-value") + " DETAILS" );
+
+					$(".products.details .qty").val( products[$(this).attr("data-value")].qty );
+					$(".products.details .price").val( products[$(this).attr("data-value")].price );
+					$(".products.details .desc").val( products[$(this).attr("data-value")].desc );
+
+					$(".products.details .qty").attr( "data-product", $( this ).attr("data-value") );
+					$(".products.details .price").attr( "data-product", $( this ).attr("data-value") );
+					$(".products.details .desc").attr( "data-product", $( this ).attr("data-value") );
+
+				});
+
+				$(".qty, .price, .desc").on('keyup', function(e) {
+					products[ $(this).attr('data-product') ][ $(this).attr("class") ] = $(this).val();
+				});
+
+				$(".products").on('click', ".item .remove", function(e) {
+					$( this ).parent(".item").remove();
+					$(".products.details").hide();
+				});
+
+			});
+
+		</script>
+	</body>
+
+</html>
